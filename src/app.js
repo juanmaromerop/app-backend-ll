@@ -1,5 +1,5 @@
 import express from 'express'
-import handlebars from'express-handlebars'
+import handlebars from 'express-handlebars'
 import __dirname from './utils.js'
 import mongoose from 'mongoose'
 import userRouter from './routes/user.router.js'
@@ -7,7 +7,6 @@ import viewsRouter from './routes/views.router.js'
 import cookieParser from 'cookie-parser'
 import passport from 'passport'
 import initiaizePassport from './config/passport.js'
-
 
 
 const app = express()

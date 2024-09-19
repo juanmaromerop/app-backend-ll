@@ -24,11 +24,11 @@ router.post('/register', async (req, res) => {
 router.post('/login', async (req, res) => {
     const { email, password } = req.body;
     const user = await userModel.findOne({ email: email });
-    
+
     if (!user) return res.status(200).send({ error: "Usuario no registrado" });
 
     const isValidPassword = validPassword(user, password);
-    
+
     if (!isValidPassword) return res.status(400).send({ error: "Email o Contraseña incorrecta" });
 
     // Genera el token JWT
@@ -36,9 +36,9 @@ router.post('/login', async (req, res) => {
 
     // Establece la cookie con el token
     res.cookie('jwt', access_token, {
-        httpOnly: true,   // La cookie no es accesible desde JavaScript
-        secure: false,    // Establece esto en true en producción para HTTPS
-        maxAge: 24 * 60 * 60 * 1000, // La cookie expira en 1 día
+        httpOnly: true,
+        secure: false,
+        maxAge: 24 * 60 * 60 * 1000,
     });
     res.status(200).redirect('/api/sessions/current');
 });
