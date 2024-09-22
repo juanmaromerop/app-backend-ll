@@ -12,8 +12,6 @@ router.get('/login', (req, res) => {
 })
 
 router.get('/current', passportCall('jwt'), authorization('user'), async (req, res) => {
-    console.log('Usuario actual:', req.user);
-
     if (!req.user || !req.user.first_name) {
         return res.status(400).send('Error: No se encontró el usuario.');
     }
