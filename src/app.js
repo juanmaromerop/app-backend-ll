@@ -15,7 +15,7 @@ dotenv.config()
 
 
 const app = express()
-const PORT = process.env.PORT
+const PORT = process.env.PORT 
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
@@ -32,7 +32,7 @@ app.use(passport.initialize())
 
 
 const environment = async () => {
-    await mongoose.connect(process.env.MONGO_URL)
+    await mongoose.connect(process.env.MONGO_URL || "mongodb+srv://juanmaromeroperalta9:juanmaromerop@cluster0.sbp6rso.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
         .then(() => {
             console.log("Conectado a la base de datos");
         }).catch(() => {
