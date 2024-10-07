@@ -59,9 +59,28 @@ export const passportCall = (strategy) => {
 export const authorization = (role) => {
     return async (req, res, next) => {
         if (!req.user) return res.status(401).send({ error: "Unauthorized" })
-        if (req.user.role !== role) return res.status(403).send({ error: "No permissio" })
+            if (!role.includes(req.user.role)) {
+                return res.status(403).send({ error: "No permission" });
+            }
         next()
     }
 }
+
+export const roleAuthorization = (roles) => {
+    return (req, res, next) => {
+        // Verificar si hay un usuario autenticado en la request
+        if (!req.user) {
+            return res.status(401).send({ error: "No autenticado" });
+        }
+
+        // Verificar si el rol del usuario está permitido
+        if (!roles.includes(req.user.role)) {
+            return res.status(403).send({ error: "Acceso denegado. No tienes permiso para realizar esta acción." });
+        }
+
+        // Si el rol está permitido, pasa al siguiente middleware o controlador
+        next();
+    };
+};
 
 export { generateToken, authToken }

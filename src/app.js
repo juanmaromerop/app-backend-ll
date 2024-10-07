@@ -1,4 +1,5 @@
 import express from 'express'
+import cors from 'cors'
 import handlebars from 'express-handlebars'
 import __dirname from './utils.js'
 import mongoose from 'mongoose'
@@ -8,11 +9,11 @@ import cookieParser from 'cookie-parser'
 import passport from 'passport'
 import initiaizePassport from './config/passport.js'
 import dotenv from 'dotenv'
+import productsRouter from './routes/products.router.js'
+import Handlebars from 'handlebars';
 
 
-// dotenv
 dotenv.config()
-
 
 const app = express()
 const PORT = process.env.PORT 
@@ -23,12 +24,17 @@ app.use(express.urlencoded({ extended: true }))
 app.engine('handlebars', handlebars.engine())
 app.set('views', __dirname + '/views')
 app.set('view engine', 'handlebars')
+Handlebars.registerHelper('eq', function (a, b) {
+    return a === b;
+  });
 app.use(express.static(__dirname + 'public'));
 
 
 app.use(cookieParser())
 initiaizePassport()
 app.use(passport.initialize())
+
+app.use(cors())
 
 
 const environment = async () => {
@@ -44,6 +50,7 @@ environment()
 
 app.use("/api/sessions", viewsRouter)
 app.use("/", userRouter)
+app.use("/", productsRouter)
 
 app.listen(PORT, () => {
     console.log(`Server running on the port ${PORT}`);

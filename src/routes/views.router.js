@@ -1,28 +1,17 @@
 import { Router } from "express";
-import { passportCall, authorization } from "../utils.js";
+import { passportCall, authorization, roleAuthorization } from "../utils.js";
+import { viewCurrent, viewLogin, viewRegister } from "../controllers/views.controllers.js";
 
 const router = Router()
 
-router.get('/register', async (req, res) => {
-    res.render('register')
+router.get('/register', viewRegister)
+
+router.get('/login', viewLogin)
+
+router.get('/current', passportCall('jwt'), roleAuthorization(['user', 'admin']), viewCurrent);
+
+router.get('/products', async (req, res) =>{
+res.render('products')
 })
-
-router.get('/login', (req, res) => {
-    res.render('login')
-})
-
-router.get('/current', passportCall('jwt'), authorization('user'), async (req, res) => {
-    if (!req.user || !req.user.first_name) {
-        return res.status(400).send('Error: No se encontró el usuario.');
-    }
-
-    res.render('current', {
-        first_name: req.user.first_name,
-        last_name: req.user.last_name,
-        email: req.user.email,
-        age: req.user.age
-    });
-});
-
 
 export default router
