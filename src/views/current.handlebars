@@ -7,56 +7,65 @@
 
 <h2>Productos disponibles</h2>
 
+{{#if (eq role 'admin')}}
 <div>
-    <button onclick="redirectToProducts()">Agregar Producto</button>
+  <button onclick="redirectToProducts()">Agregar Producto</button>
 </div>
+{{/if}}
 
 <ul>
   {{#each products}}
-    <li>
-      <h3>{{this.product}}</h3>
-      <p>{{this.description}}</p>
-      <p>Precio: ${{this.price}}</p>
-      <p>Stock: {{this.stock}}</p>
-      <p>Categoría: {{this.category}}</p>
+  <li>
+    <h3>{{this.product}}</h3>
+    <p>{{this.description}}</p>
+    <p>Precio: ${{this.price}}</p>
+    <p>Stock: {{this.stock}}</p>
+    <p>Categoría: {{this.category}}</p>
 
-      {{#if (eq ../role 'admin')}}
-        <!-- Mostrar opciones para el administrador (actualizar y eliminar producto) -->
-        <!-- Botón para eliminar producto -->
-        <form action="/products/delete/{{this._id}}" method="POST">
-          <button type="submit">Eliminar</button>
-        </form>
-        <!-- Botón para actualizar producto (abre un formulario) -->
-        <button onclick="toggleUpdateForm('{{this._id}}')">Actualizar</button>
+    {{#if (eq ../role 'admin')}}
 
-        <!-- Formulario oculto para actualizar producto -->
-        <div id="updateForm-{{this._id}}" style="display:none;">
-          <form action="/products/update/{{this._id}}" method="POST">
-            <label for="product">Nombre:</label>
-            <input type="text" name="product" value="{{this.product}}">
-            
-            <label for="description">Descripción:</label>
-            <input type="text" name="description" value="{{this.description}}">
-            
-            <label for="price">Precio:</label>
-            <input type="number" name="price" value="{{this.price}}">
-            
-            <label for="stock">Stock:</label>
-            <input type="number" name="stock" value="{{this.stock}}">
-            
-            <label for="category">Categoría:</label>
-            <input type="text" name="category" value="{{this.category}}">
-            
-            <button type="submit">Guardar Cambios</button>
-          </form>
-        </div>
-      {{else}}
-        <!-- Mostrar solo la opción de agregar al carrito para usuarios -->
-        <form action="/cart/add/{{this._id}}" method="POST">
-          <button type="submit">Agregar al carrito</button>
-        </form>
-      {{/if}}
-    </li>
+    <!-- Mostrar opciones para el administrador (actualizar y eliminar producto) -->
+    <!-- Botón para eliminar producto -->
+    <form action="/products/delete/{{this._id}}" method="POST">
+      <button type="submit">Eliminar</button>
+    </form>
+    <!-- Botón para actualizar producto (abre un formulario) -->
+    <button onclick="toggleUpdateForm('{{this._id}}')">Actualizar</button>
+
+    <!-- Formulario oculto para actualizar producto -->
+    <div id="updateForm-{{this._id}}" style="display:none;">
+      <form action="/products/update/{{this._id}}" method="POST">
+        <label for="product">Nombre:</label>
+        <input type="text" name="product" value="{{this.product}}">
+
+        <label for="description">Descripción:</label>
+        <input type="text" name="description" value="{{this.description}}">
+
+        <label for="price">Precio:</label>
+        <input type="number" name="price" value="{{this.price}}">
+
+        <label for="stock">Stock:</label>
+        <input type="number" name="stock" value="{{this.stock}}">
+
+        <label for="category">Categoría:</label>
+        <input type="text" name="category" value="{{this.category}}">
+
+        <button type="submit">Guardar Cambios</button>
+      </form>
+    </div>
+    {{else}}
+
+    <div>
+      <button onclick="decreaseQuantity('{{this._id}}', {{this.stock}})">-</button>
+      <span id="quantity-{{this._id}}">1</span>
+      <button onclick="increaseQuantity('{{this._id}}', {{this.stock}})">+</button>
+    </div>
+
+     <input type="hidden" id="inputQuantity-{{this._id}}" value="1">
+
+    <button onclick="addToCart('{{this._id}}', getQuantity('{{this._id}}'), {{this.price}})">Agregar al carrito</button>
+    {{/if}}
+  </li>
   {{/each}}
 </ul>
 
@@ -66,8 +75,49 @@
     const form = document.getElementById(`updateForm-${productId}`);
     form.style.display = form.style.display === 'none' ? 'block' : 'none';
   }
-  
-    const redirectToProducts = () => {
+
+  const redirectToProducts = () => {
     window.location.href = "http://localhost:8080/api/sessions/products";
   }
+
+const increaseQuantity = (productId, maxStock) => {
+  const quantitySpan = document.getElementById(`quantity-${productId}`);
+  let currentQuantity = parseInt(quantitySpan.textContent);
+  if (currentQuantity < maxStock) {
+    currentQuantity++;
+    quantitySpan.textContent = currentQuantity;
+    document.getElementById(`inputQuantity-${productId}`).value = currentQuantity;
+  }
+};
+
+const decreaseQuantity = (productId) => {
+  const quantitySpan = document.getElementById(`quantity-${productId}`);
+  let currentQuantity = parseInt(quantitySpan.textContent);
+  if (currentQuantity > 1) {
+    currentQuantity--;
+    quantitySpan.textContent = currentQuantity;
+    document.getElementById(`inputQuantity-${productId}`).value = currentQuantity;
+  }
+};
+
+const getQuantity = (productId) => {
+    return parseInt(document.getElementById(`inputQuantity-${productId}`).value);
+};
+
+const addToCart = async (productId, quantity, price) => {
+  console.log(productId)
+  const response = await fetch(`/api/sessions/cart/${productId}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ quantity, price }),
+  });
+
+  if (response.ok) {
+    alert('Producto agregado al carrito');
+  } else {
+    alert('Error al agregar producto al carrito');
+  }
+};
 </script>

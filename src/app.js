@@ -29,6 +29,15 @@ Handlebars.registerHelper('eq', function (a, b) {
   });
 app.use(express.static(__dirname + 'public'));
 
+Handlebars.registerHelper('multiply', function(a, b) {
+    return a * b;
+});
+
+// Helper para calcular el total del carrito
+Handlebars.registerHelper('calculateTotal', function(products) {
+    return products.reduce((total, product) => total + (product.price * product.quantity), 0);
+});
+
 
 app.use(cookieParser())
 initiaizePassport()

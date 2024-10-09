@@ -21,4 +21,8 @@ export default class ProductsAndUser {
             products: productsData // Devolver directamente los productos
         };
     };
+
+    
+
+
 }

@@ -1,0 +1,34 @@
+ <h1>Carrito de Compras</h1>
+    {{#if cart}}
+        <table>
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th>Cantidad</th>
+                    <th>Precio</th>
+                    <th>Total</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each cart.products}}
+                    <tr>
+                        <td>{{this.product.product}}</td> <!-- Asegúrate de que el nombre del producto esté accesible -->
+                        <td>{{this.quantity}}</td>
+                        <td>{{this.price}}</td>
+                        <td>{{multiply this.price this.quantity}}</td> <!-- Calcula el total por producto -->
+                        <td>
+                            <form action="/api/sessions/cart/remove/{{this.product._id}}" method="POST"> <!-- Aquí deberías definir la ruta para eliminar un producto -->
+                                <button type="submit">Eliminar</button>
+                            </form>
+                        </td>
+                    </tr>
+                {{/each}}
+            </tbody>
+        </table>
+        <h3>Total del Carrito: {{calculateTotal cart.products}}</h3> <!-- Total del carrito -->
+    {{else}}
+        <p>No hay productos en el carrito.</p>
+    {{/if}}
+    
+    <a href="/api/sessions/current">Volver a la tienda</a> <!-- Enlace a la página de productos -->
