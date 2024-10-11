@@ -11,6 +11,8 @@ import initiaizePassport from './config/passport.js'
 import dotenv from 'dotenv'
 import productsRouter from './routes/products.router.js'
 import Handlebars from 'handlebars';
+import cartRouter from './routes/cart.router.js'
+
 
 
 dotenv.config()
@@ -33,10 +35,10 @@ Handlebars.registerHelper('multiply', function(a, b) {
     return a * b;
 });
 
-// Helper para calcular el total del carrito
-Handlebars.registerHelper('calculateTotal', function(products) {
-    return products.reduce((total, product) => total + (product.price * product.quantity), 0);
-});
+// // Helper para calcular el total del carrito
+// Handlebars.registerHelper('calculateTotal', function(products) {
+//     return products.reduce((total, product) => total + (product.price * product.quantity), 0);
+// });
 
 
 app.use(cookieParser())
@@ -60,6 +62,8 @@ environment()
 app.use("/api/sessions", viewsRouter)
 app.use("/", userRouter)
 app.use("/", productsRouter)
+app.use("/", cartRouter)
+
 
 app.listen(PORT, () => {
     console.log(`Server running on the port ${PORT}`);

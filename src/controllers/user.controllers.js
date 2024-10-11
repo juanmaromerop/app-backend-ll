@@ -1,6 +1,8 @@
 import User from '../dao/clases/user.dao.js'
 import { generateToken } from '../utils.js';
 import { validPassword } from '../utils.js';
+import jwt from 'jsonwebtoken'
+const PRIVAE_KEY = "appSecret"
 
 const userService = new User()
 
@@ -34,3 +36,5 @@ export const loginControllers = async (req, res) => {
     res.status(200).redirect('/api/sessions/current');
 
 }
+
+

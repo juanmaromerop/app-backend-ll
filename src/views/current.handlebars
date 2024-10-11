@@ -12,6 +12,11 @@
   <button onclick="redirectToProducts()">Agregar Producto</button>
 </div>
 {{/if}}
+{{#if (eq role 'user')}}
+<div>
+  <button onclick="redirectToCart()">Ir al carrito</button>
+</div>
+{{/if}}
 
 <ul>
   {{#each products}}
@@ -55,15 +60,17 @@
     </div>
     {{else}}
 
-    <div>
-      <button onclick="decreaseQuantity('{{this._id}}', {{this.stock}})">-</button>
-      <span id="quantity-{{this._id}}">1</span>
-      <button onclick="increaseQuantity('{{this._id}}', {{this.stock}})">+</button>
-    </div>
+   <div>
+    <button onclick="decreaseQuantity('{{this._id}}')">-</button>
+    <span id="quantity-{{this._id}}">1</span>
+    <button onclick="increaseQuantity('{{this._id}}', {{this.stock}})">+</button>
+</div>
 
-     <input type="hidden" id="inputQuantity-{{this._id}}" value="1">
+<div>
+    <button onclick="addToCart('{{this._id}}', {{this.stock}})">Agregar Al Carrito</button>
+</div>
 
-    <button onclick="addToCart('{{this._id}}', getQuantity('{{this._id}}'), {{this.price}})">Agregar al carrito</button>
+
     {{/if}}
   </li>
   {{/each}}
@@ -80,44 +87,62 @@
     window.location.href = "http://localhost:8080/api/sessions/products";
   }
 
+  const redirectToCart = () => {
+    window.location.href = "http://localhost:8080/api/sessions/cart";
+  }
+
 const increaseQuantity = (productId, maxStock) => {
-  const quantitySpan = document.getElementById(`quantity-${productId}`);
-  let currentQuantity = parseInt(quantitySpan.textContent);
-  if (currentQuantity < maxStock) {
-    currentQuantity++;
-    quantitySpan.textContent = currentQuantity;
-    document.getElementById(`inputQuantity-${productId}`).value = currentQuantity;
-  }
+    const quantitySpan = document.getElementById(`quantity-${productId}`);
+    
+    // Convertir el valor actual de cantidad en un número
+    let currentQuantity = parseInt(quantitySpan.textContent);
+    
+    if (currentQuantity < maxStock) {
+        currentQuantity++;
+        quantitySpan.textContent = currentQuantity;
+        document.getElementById(`inputQuantity-${productId}`).value = currentQuantity;
+    } else {
+        alert(`No puedes agregar más de ${maxStock} unidades de este producto.`);
+    }
 };
 
-const decreaseQuantity = (productId) => {
-  const quantitySpan = document.getElementById(`quantity-${productId}`);
-  let currentQuantity = parseInt(quantitySpan.textContent);
-  if (currentQuantity > 1) {
-    currentQuantity--;
-    quantitySpan.textContent = currentQuantity;
-    document.getElementById(`inputQuantity-${productId}`).value = currentQuantity;
-  }
-};
+  const decreaseQuantity = (productId) => {
+    const quantitySpan = document.getElementById(`quantity-${productId}`);
+    let currentQuantity = parseInt(quantitySpan.textContent);
+    if (currentQuantity > 1) {
+      currentQuantity--;
+      quantitySpan.textContent = currentQuantity;
+      document.getElementById(`inputQuantity-${productId}`).value = currentQuantity; // Asegúrate de que esto esté aquí
+    }
+  };
 
-const getQuantity = (productId) => {
-    return parseInt(document.getElementById(`inputQuantity-${productId}`).value);
-};
 
-const addToCart = async (productId, quantity, price) => {
-  console.log(productId)
-  const response = await fetch(`/api/sessions/cart/${productId}`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ quantity, price }),
-  });
+const addToCart = async (productId, maxStock) => {
+    const quantity = parseInt(document.getElementById(`quantity-${productId}`).textContent); // Convertir a número
 
-  if (response.ok) {
-    alert('Producto agregado al carrito');
-  } else {
-    alert('Error al agregar producto al carrito');
-  }
+    // Verificar si la cantidad seleccionada es mayor que el stock disponible
+    if (quantity > maxStock) {
+        alert(`No puedes agregar más de ${maxStock} unidades de este producto.`);
+        return;
+    }
+
+    try {
+        const response = await fetch('/cart/add', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ productId, quantity }), // Enviar la cantidad como número
+        });
+
+        const data = await response.json();
+        if (response.ok) {
+            alert(data.message);
+        } else {
+            alert(data.error);
+        }
+    } catch (error) {
+        console.error(error);
+    }
 };
 </script>

@@ -1,7 +1,5 @@
 import ProductsAndUser from "../dao/clases/views.dao.js"
-import Cart from '../dao/clases/cart.dao.js'
 
-const cartService = new Cart()
 const ProductsAndUserService = new ProductsAndUser()
 
 export const viewRegister = (req, res) => {
@@ -32,13 +30,3 @@ export const viewCurrent = async (req, res) => {
         res.status(400).send(error.message);
     }
 };
-
-export const getCartController = async (req, res) => {
-    try {
-        let cart = await cartService.getCartByUserId(req.user._id);
-        res.render('cart', { cart })
-    } catch (error) {
-        console.error(error);
-        res.status(500).send('Error al obtener el carrito');
-    }
-}

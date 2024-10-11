@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { passportCall, authorization, roleAuthorization } from "../utils.js";
-import { viewCurrent, viewLogin, viewRegister, getCartController } from "../controllers/views.controllers.js";
+import { viewCurrent, viewLogin, viewRegister } from "../controllers/views.controllers.js";
+import { getCartController } from "../controllers/cart.controllers.js";
 const router = Router()
 
 router.get('/register', viewRegister)
@@ -13,6 +14,8 @@ router.get('/products', async (req, res) =>{
 res.render('products')
 })
 
-router.get('/cart', passportCall('jwt'), getCartController)
+router.get('/cart', getCartController);
+
+
 
 export default router
