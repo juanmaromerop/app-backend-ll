@@ -1,8 +1,14 @@
 import { Router } from "express";
-import { addToCartController } from "../controllers/cart.controllers.js";
+import { addToCartController, removeFromCartController, clearCartController } from "../controllers/cart.controllers.js";
 
 const router = Router()
 
 router.post('/cart/add',  addToCartController); 
+
+router.post('/cart/remove', removeFromCartController);
+
+// Vaciar carrito
+router.delete('/cart/clear', clearCartController);
+
 
 export default router

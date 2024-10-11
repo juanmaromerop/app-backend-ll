@@ -1,20 +1,73 @@
 <h1>Tu Carrito</h1>
-
-{{#if cart.length}}
+<ul>
     {{#each cart}}
-        <div class="cart-item">
-            <h3>Producto: {{product}}</h3>
-            <p>Precio por unidad: ${{price}}</p>
-            <p>Cantidad: {{quantity}}</p>
-            <p>Total por este producto: ${{total}}</p>
-        </div>
+        <li>
+            <h3>{{this.name}}</h3>
+            <p>Precio: ${{this.price}}</p>
+            <p>Cantidad: {{this.quantity}}</p>
+            <p>Total por este producto: ${{this.total}}</p>
+            <button class="remove-item-btn" data-product-id="{{this.productId}}">Eliminar producto</button>
+        </li>
         <hr>
     {{/each}}
+</ul>
 
-    <h2>Precio Total del Carrito: ${{total}}</h2>
-<a href="/api/sessions/current">Volver a la tienda</a> <!-- Enlace a la página de productos -->
-{{else}}
-    <p>Tu carrito está vacío</p>
-<a href="/api/sessions/current">Volver a la tienda</a> <!-- Enlace a la página de productos -->
-{{/if}}
+<h2>Total del carrito: ${{total}}</h2>
 
+<button id="clear-cart-btn">Vaciar Carrito</button>
+
+<div>
+  <a href="/api/sessions/current">Volver a la tienda</a> <!-- Enlace a la página de productos -->
+</div>
+
+<!-- Script para manejar la eliminación de productos del carrito y vaciar el carrito -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // Eliminar un producto del carrito
+        document.querySelectorAll('.remove-item-btn').forEach(button => {
+            button.addEventListener('click', async (e) => {
+                const productId = e.target.getAttribute('data-product-id');
+                  console.log("Product ID:", productId);
+
+                try {
+                    const response = await fetch('/cart/remove', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ productId }),
+                    });
+
+                    const result = await response.json();
+                    if (response.ok) {
+                        alert('Producto eliminado correctamente');
+                        location.reload(); // Recargar la página para reflejar los cambios
+                    } else {
+                        alert(result.error || 'Error al eliminar el producto');
+                    }
+                } catch (error) {
+                    console.error(error);
+                }
+            });
+        });
+
+        // Vaciar todo el carrito
+        document.getElementById('clear-cart-btn').addEventListener('click', async () => {
+            try {
+                const response = await fetch('/cart/clear', {
+                    method: 'DELETE',
+                });
+
+                const result = await response.json();
+                if (response.ok) {
+                    alert('Carrito vaciado correctamente');
+                    location.reload(); // Recargar la página para reflejar los cambios
+                } else {
+                    alert(result.error || 'Error al vaciar el carrito');
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        });
+    });
+</script>
