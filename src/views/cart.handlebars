@@ -1,23 +1,29 @@
 <h1>Tu Carrito</h1>
 <ul>
     {{#each cart}}
-        <li>
-            <h3>{{this.name}}</h3>
-            <p>Precio: ${{this.price}}</p>
-            <p>Cantidad: {{this.quantity}}</p>
-            <p>Total por este producto: ${{this.total}}</p>
-            <button class="remove-item-btn" data-product-id="{{this.productId}}">Eliminar producto</button>
-        </li>
-        <hr>
+    <li>
+        <h3>{{this.name}}</h3>
+        <p>Precio: ${{this.price}}</p>
+        <p>Cantidad: {{this.quantity}}</p>
+        <p>Total por este producto: ${{this.total}}</p>
+        <button class="remove-item-btn" data-product-id="{{this.productId}}">Eliminar producto</button>
+    </li>
+    <hr>
     {{/each}}
 </ul>
 
 <h2>Total del carrito: ${{total}}</h2>
 
-<button id="clear-cart-btn">Vaciar Carrito</button>
+<div>
+    <button id="clear-cart-btn">Vaciar Carrito</button>
+</div>
 
 <div>
-  <a href="/api/sessions/current">Volver a la tienda</a> <!-- Enlace a la página de productos -->
+   <button id="checkout-btn" data-cart='{{json cart}}'>Finalizar compra</button>
+</div>
+
+<div>
+    <a href="/api/sessions/current">Volver a la tienda</a> <!-- Enlace a la página de productos -->
 </div>
 
 <!-- Script para manejar la eliminación de productos del carrito y vaciar el carrito -->
@@ -27,11 +33,11 @@
         document.querySelectorAll('.remove-item-btn').forEach(button => {
             button.addEventListener('click', async (e) => {
                 const productId = e.target.getAttribute('data-product-id');
-                  console.log("Product ID:", productId);
+                console.log("Product ID:", productId);
 
                 try {
                     const response = await fetch('/cart/remove', {
-                        method: 'POST',
+                        method: 'DELETE',
                         headers: {
                             'Content-Type': 'application/json',
                         },
@@ -70,4 +76,33 @@
             }
         });
     });
+
+   document.getElementById('checkout-btn').addEventListener('click', async (event) => {
+  try {
+    const cart = JSON.parse(event.target.getAttribute('data-cart'));
+   
+
+    const response = await fetch('/api/sessions/ticket', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        cart: cart,
+      }),
+    });
+
+    const result = await response.json();
+    
+    if (response.ok) {
+      alert('Compra finalizada con éxito. Revisa tu correo para más detalles.');
+      window.location.href = '/api/sessions/current';
+    } else {
+      alert(result.error || 'Error al finalizar la compra');
+    }
+  } catch (error) {
+    console.error('Error al finalizar la compra:', error);
+  }
+});
+
 </script>

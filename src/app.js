@@ -1,5 +1,6 @@
 import express from 'express'
 import cors from 'cors'
+import exphbs from 'express-handlebars';
 import handlebars from 'express-handlebars'
 import __dirname from './utils.js'
 import mongoose from 'mongoose'
@@ -12,6 +13,7 @@ import dotenv from 'dotenv'
 import productsRouter from './routes/products.router.js'
 import Handlebars from 'handlebars';
 import cartRouter from './routes/cart.router.js'
+import ticketRouter from './routes/ticket.router.js'
 
 
 
@@ -23,17 +25,24 @@ const PORT = process.env.PORT
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
-app.engine('handlebars', handlebars.engine())
+const hbs = exphbs.create({
+    helpers: {
+      json: function (context) {
+        return JSON.stringify(context); // Helper para convertir un objeto a JSON
+      },
+      eq: function (a, b) {
+        return a === b; // Helper para comparar valores
+      },
+      multiply: function (a, b) {
+        return a * b; // Helper para multiplicar dos valores
+      },
+    },
+  });
+
+app.engine('handlebars',  hbs.engine)
 app.set('views', __dirname + '/views')
 app.set('view engine', 'handlebars')
-Handlebars.registerHelper('eq', function (a, b) {
-    return a === b;
-  });
-app.use(express.static(__dirname + 'public'));
 
-Handlebars.registerHelper('multiply', function(a, b) {
-    return a * b;
-});
 
 // // Helper para calcular el total del carrito
 // Handlebars.registerHelper('calculateTotal', function(products) {
@@ -63,6 +72,7 @@ app.use("/api/sessions", viewsRouter)
 app.use("/", userRouter)
 app.use("/", productsRouter)
 app.use("/", cartRouter)
+app.use("/api/sessions", ticketRouter)
 
 
 app.listen(PORT, () => {

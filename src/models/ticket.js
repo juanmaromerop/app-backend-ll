@@ -26,7 +26,6 @@ const ticketSchema = new mongoose.Schema({
   ticketSchema.pre('save', async function (next) {
     const ticket = this;
   
-
     ticket.code = `TICKET-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
   
     next();

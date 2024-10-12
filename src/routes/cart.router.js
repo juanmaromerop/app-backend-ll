@@ -5,7 +5,7 @@ const router = Router()
 
 router.post('/cart/add',  addToCartController); 
 
-router.post('/cart/remove', removeFromCartController);
+router.delete('/cart/remove', removeFromCartController);
 
 // Vaciar carrito
 router.delete('/cart/clear', clearCartController);
