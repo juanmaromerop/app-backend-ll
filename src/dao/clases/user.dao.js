@@ -10,7 +10,6 @@ export default class User {
 
     register = async (first_name, last_name, email, age, password, role) => {
         try {
-            // Primero creamos al usuario
             let user = new UserDTO({
                 first_name,
                 last_name,
@@ -21,15 +20,14 @@ export default class User {
             });
 
             let newUser = await userModel(user);
-            await newUser.save(); // Guardamos el usuario primero
+            await newUser.save();
 
-            // Después creamos el carrito asociado al userId del usuario recién creado
             let newCart = await cartUserModel.create({ userId: newUser._id, products: [] });
             console.log("Carrito creado con ID: ", newCart._id);
 
-            // Actualizamos el cartId en el modelo de usuario
+
             newUser.cartId = newCart._id.toString();
-            await newUser.save(); // Guardamos nuevamente el usuario con el cartId asignado
+            await newUser.save();
 
             return newUser;
 

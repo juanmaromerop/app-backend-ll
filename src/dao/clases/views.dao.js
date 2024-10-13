@@ -12,13 +12,9 @@ export default class ProductsAndUser {
 
         const productsData = await productsService.getProducts();
 
-        // Verificar si hay productos
-        const products = productsData && productsData.length > 0 ? productsData : [];
-
-        // Devolver el usuario y los productos
         return {
             user,
-            products: productsData // Devolver directamente los productos
+            products: productsData 
         };
     };
 

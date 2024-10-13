@@ -23,10 +23,9 @@
 </div>
 
 <div>
-    <a href="/api/sessions/current">Volver a la tienda</a> <!-- Enlace a la página de productos -->
+    <a href="/api/sessions/current">Volver a la tienda</a> 
 </div>
 
-<!-- Script para manejar la eliminación de productos del carrito y vaciar el carrito -->
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         // Eliminar un producto del carrito
@@ -47,7 +46,7 @@
                     const result = await response.json();
                     if (response.ok) {
                         alert('Producto eliminado correctamente');
-                        location.reload(); // Recargar la página para reflejar los cambios
+                        location.reload(); 
                     } else {
                         alert(result.error || 'Error al eliminar el producto');
                     }
@@ -77,6 +76,7 @@
         });
     });
 
+//Ticket
    document.getElementById('checkout-btn').addEventListener('click', async (event) => {
   try {
     const cart = JSON.parse(event.target.getAttribute('data-cart'));

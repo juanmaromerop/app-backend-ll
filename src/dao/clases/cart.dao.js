@@ -11,27 +11,23 @@ export default class Cart {
             const cart = await cartUserModel.findById(user.cartId);
             if (!cart) throw new Error("Carrito no encontrado");
     
-            // Obtener el producto de la base de datos para verificar el stock
             const product = await productsModel.findById(productId);
             if (!product) throw new Error("Producto no encontrado");
     
             const existingProduct = cart.products.find(item => item.productId.toString() === productId);
     
-            // Asegurarse de que `quantity` sea un número
             const newQuantity = parseInt(quantity);
     
-            // Cantidad total después de la actualización (si ya existe en el carrito)
             const totalQuantity = existingProduct ? existingProduct.quantity + newQuantity : newQuantity;
     
-            // Verificar si la cantidad total excede el stock disponible
             if (totalQuantity > product.stock) {
                 throw new Error(`No puedes agregar más de ${product.stock} unidades de este producto.`);
             }
     
             if (existingProduct) {
-                existingProduct.quantity += newQuantity; // Actualizar cantidad como número
+                existingProduct.quantity += newQuantity; 
             } else {
-                cart.products.push({ productId, quantity: newQuantity }); // Agregar nuevo producto
+                cart.products.push({ productId, quantity: newQuantity });
             }
     
             await cart.save();
@@ -52,12 +48,11 @@ export default class Cart {
             console.log(cart); 
             let total = 0;
 
-            // Calcular el precio total del carrito
             cart.products.forEach(item => {
-                total += item.quantity * item.productId.price; // Multiplicamos cantidad por precio del producto
+                total += item.quantity * item.productId.price;
             });
 
-            return { cart, total }; // Devolvemos el carrito y el total
+            return { cart, total }; 
         } catch (error) {
             console.log(error);
             return null;
@@ -72,7 +67,6 @@ export default class Cart {
             const cart = await cartUserModel.findById(user.cartId);
             if (!cart) throw new Error("Carrito no encontrado");
 
-            // Filtrar productos para eliminar el que corresponde al productId
             cart.products = cart.products.filter(item => item.productId.toString() !== productId);
 
             await cart.save();
@@ -83,7 +77,6 @@ export default class Cart {
         }
     };
 
-    // Método para vaciar todo el carrito
     clearCart = async (userId) => {
         try {
             const user = await userModel.findById(userId);
@@ -92,7 +85,6 @@ export default class Cart {
             const cart = await cartUserModel.findById(user.cartId);
             if (!cart) throw new Error("Carrito no encontrado");
 
-            // Vaciar el array de productos
             cart.products = [];
 
             await cart.save();

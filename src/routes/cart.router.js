@@ -7,7 +7,6 @@ router.post('/cart/add',  addToCartController);
 
 router.delete('/cart/remove', removeFromCartController);
 
-// Vaciar carrito
 router.delete('/cart/clear', clearCartController);
 
 

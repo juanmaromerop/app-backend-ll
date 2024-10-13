@@ -20,11 +20,11 @@ const initiaizePassport = () => {
         jwtFromRequest: ExtractJWT.fromExtractors([cookieExtractor]),
         secretOrKey: 'appSecret'
     }, async (jwt_payload, done) => {
+        
         try {
-            // Aquí buscamos el usuario por el ID dentro del payload JWT
             const user = await userModel.findById(jwt_payload.user._id);
             if (!user) {
-                return done(null, false); // Si no encontramos el usuario, devolvemos false
+                return done(null, false); 
             }
             return done(null, user);
         } catch (error) {

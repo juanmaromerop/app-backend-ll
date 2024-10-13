@@ -112,13 +112,13 @@ const increaseQuantity = (productId, maxStock) => {
     if (currentQuantity > 1) {
       currentQuantity--;
       quantitySpan.textContent = currentQuantity;
-      document.getElementById(`inputQuantity-${productId}`).value = currentQuantity; // Asegúrate de que esto esté aquí
+      document.getElementById(`inputQuantity-${productId}`).value = currentQuantity; 
     }
   };
 
 
 const addToCart = async (productId, maxStock) => {
-    const quantity = parseInt(document.getElementById(`quantity-${productId}`).textContent); // Convertir a número
+    const quantity = parseInt(document.getElementById(`quantity-${productId}`).textContent); 
 
     // Verificar si la cantidad seleccionada es mayor que el stock disponible
     if (quantity > maxStock) {
@@ -132,7 +132,7 @@ const addToCart = async (productId, maxStock) => {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ productId, quantity }), // Enviar la cantidad como número
+            body: JSON.stringify({ productId, quantity }),
         });
 
         const data = await response.json();
