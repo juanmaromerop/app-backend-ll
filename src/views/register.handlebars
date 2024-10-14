@@ -29,3 +29,19 @@
         </form>
         <p>Ir a Iniciar Sesion <a href="/api/sessions/login">Login</a></p>
     </div>
+
+    <script>
+           // Obtener los parámetros de la URL
+    const params = new URLSearchParams(window.location.search);
+
+    // Verificar si hay un mensaje de error
+    if (params.has('error')) {
+        const errorMessage = params.get('error');
+        
+        if (errorMessage === 'invalidRole') {
+            alert('Solo se permite role "user" o "admin"');
+        } else {
+            alert(errorMessage); // Mostrar cualquier otro error
+        }
+    }
+    </script>

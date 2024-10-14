@@ -1,4 +1,4 @@
-import User from '../dao/clases/user.dao.js'
+import User from '../repositories/User.repository.js'
 import { generateToken } from '../utils.js';
 import { validPassword } from '../utils.js';
 import jwt from 'jsonwebtoken'
@@ -10,6 +10,11 @@ export const registerControllers = async (req, res) => {
     try {
         const { first_name, last_name, email, age, password, role } = req.body;
         let newUser = await userService.register(first_name, last_name, email, age, password, role)
+       
+        if (!newUser) {
+            return res.status(400).redirect('/api/sessions/register?error=invalidRole');
+        }
+
         const access_token = generateToken(newUser)
         res.cookie('jwt', access_token, { httpOnly: true })
             .status(201)
