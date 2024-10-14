@@ -8,11 +8,9 @@ export const completePurchase = async (req, res) => {
   try {
     const token = req.cookies.jwt;
 
-    // Verificamos si existe el token
     if (!token) {
         return res.status(401).send({ error: "No autorizado. Faltan credenciales." });
     }
-
 
     const decoded = jwt.verify(token, PRIVAE_KEY);
     const userEmail = decoded.user.email; 

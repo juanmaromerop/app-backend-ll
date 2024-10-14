@@ -13,8 +13,6 @@ import productsRouter from './routes/products.router.js'
 import cartRouter from './routes/cart.router.js'
 import ticketRouter from './routes/ticket.router.js'
 
-
-
 dotenv.config()
 
 const app = express()
