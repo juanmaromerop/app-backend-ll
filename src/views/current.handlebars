@@ -76,7 +76,24 @@
   {{/each}}
 </ul>
 
+<div>
+  <button onclick="logout()">Cerrar Sesion</button>
+</div>
+
 <script>
+
+  function logout() {
+    fetch('/api/sessions/logout', {
+      method: 'POST',
+    })
+    .then(response => {
+      if (response.ok) {
+        window.location.href = '/api/sessions/login'; // Redirige al login
+      }
+    })
+    .catch(error => console.error('Error al cerrar sesión:', error));
+  }
+
   // Función para mostrar/ocultar el formulario de actualización
   const toggleUpdateForm = (productId) => {
     const form = document.getElementById(`updateForm-${productId}`);

@@ -2,11 +2,6 @@ import Products from "../dao/clases/products.dao.js";
 
 const productsService = new Products()
 
-// export const getProductsControllers = async (req, res) =>{
-//     let result = await productsService.getProducts()
-//     res.send({status:"success", result})
-// }
-
 export const saveProductsControllers = async (req, res) => {
     try {
         const { product, description, price, stock, category } = req.body;

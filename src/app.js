@@ -1,7 +1,6 @@
 import express from 'express'
 import cors from 'cors'
 import exphbs from 'express-handlebars';
-import handlebars from 'express-handlebars'
 import __dirname from './utils.js'
 import mongoose from 'mongoose'
 import userRouter from './routes/user.router.js'
@@ -11,7 +10,6 @@ import passport from 'passport'
 import initiaizePassport from './config/passport.js'
 import dotenv from 'dotenv'
 import productsRouter from './routes/products.router.js'
-import Handlebars from 'handlebars';
 import cartRouter from './routes/cart.router.js'
 import ticketRouter from './routes/ticket.router.js'
 

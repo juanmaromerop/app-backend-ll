@@ -1,8 +1,6 @@
 import User from '../repositories/User.repository.js'
 import { generateToken } from '../utils.js';
 import { validPassword } from '../utils.js';
-import jwt from 'jsonwebtoken'
-const PRIVAE_KEY = "appSecret"
 
 const userService = new User()
 
@@ -42,4 +40,8 @@ export const loginControllers = async (req, res) => {
 
 }
 
+export const logout = async (req, res) =>{
+    res.clearCookie('jwt');
+    res.status(200).redirect('/api/sessions/login');
+}
 
